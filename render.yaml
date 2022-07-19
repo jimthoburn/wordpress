@@ -1,48 +1,106 @@
+# Change “myappname” throughout this file, to the name of your application.
 services:
 - type: web
-  name: wordpress
+  name: myappname-wordpress
   env: docker
   plan: standard
+  region: oregon
+  autoDeploy: false
+  dockerfilePath: ./wordpress/Dockerfile
+  dockerContext: ./wordpress
   disk:
     name: wordpress
     mountPath: /var/www/html
+    # Pick a size for your disk. You can increase this size manually over time.
     sizeGB: 20
   envVars:
   - key: WORDPRESS_DB_HOST
     fromService:
-      name: mysql-wordpress
+      name: myappname-mysql
       type: pserv
       property: host
   - key: WORDPRESS_DB_NAME
     fromService:
-      name: mysql-wordpress
+      name: myappname-mysql
       type: pserv
       envVarKey: MYSQL_DATABASE
   - key: WORDPRESS_DB_USER
     fromService:
-      name: mysql-wordpress
+      name: myappname-mysql
       type: pserv
       envVarKey: MYSQL_USER
   - key: WORDPRESS_DB_PASSWORD
     fromService:
-      name: mysql-wordpress
+      name: myappname-mysql
       type: pserv
       envVarKey: MYSQL_PASSWORD
+  # Manually define the port to serve traffic from, to work around an issue
+  # where the port defaults to `10000`:
+  # https://render.com/docs/environment-variables#optional-environment-variables
+  - key: PORT
+    value: 80
 - type: pserv
-  name: mysql-wordpress
-  repo: https://github.com/render-examples/mysql.git
+  name: myappname-mysql
   env: docker
   plan: standard
+  region: oregon
+  autoDeploy: false
+  dockerfilePath: ./mysql/Dockerfile
+  dockerContext: ./mysql
   disk:
-    name: mysql-wordpress
+    name: mysql
     mountPath: /var/lib/mysql
-    sizeGB: 20
+    # Pick a size for your disk. You can increase this size manually over time.
+    sizeGB: 10
   envVars:
   - key: MYSQL_DATABASE
-    value: mysql
+    value: myappname
   - key: MYSQL_USER
-    value: mysql
+    value: myappname_user
   - key: MYSQL_PASSWORD
     generateValue: true
   - key: MYSQL_ROOT_PASSWORD
     generateValue: true
+- type: cron
+  name: myappname-mysql-backup
+  env: docker
+  plan: standard
+  region: oregon
+  autoDeploy: false
+  dockerfilePath: ./backups/Dockerfile
+  dockerContext: ./backups
+  schedule: "0 3 * * *"
+  envVars:
+  # Pick the region closest to your database.
+  # For example, `us-west-2` for the `oregon` region
+  - key: AWS_REGION
+    sync: false
+  # Pick a globally unique name for your bucket.
+  # For example, <my-amazon-username>-myappname-render-mysql-backups
+  - key: S3_BUCKET_NAME
+    sync: false
+  # Looks like "AKIAXXXXXXXXXXXXXXXX"
+  - key: AWS_ACCESS_KEY_ID
+    sync: false
+  - key: AWS_SECRET_ACCESS_KEY
+    sync: false
+  - key: MYSQL_HOST
+    fromService:
+      name: myappname-mysql
+      type: pserv
+      property: host
+  - key: MYSQL_DATABASE
+    fromService:
+      name: myappname-mysql
+      type: pserv
+      envVarKey: MYSQL_DATABASE
+  - key: MYSQL_USER
+    fromService:
+      name: myappname-mysql
+      type: pserv
+      envVarKey: MYSQL_USER
+  - key: MYSQL_PASSWORD
+    fromService:
+      name: myappname-mysql
+      type: pserv
+      envVarKey: MYSQL_PASSWORD
