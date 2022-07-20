@@ -34,7 +34,7 @@ In this guide:
 
 1. Make any changes you wish to your copy of the Dockerfile(s) or [render.yaml](render.yaml). For example, you may want to change the [region](https://render.com/docs/regions) and replace `myappname` with the name of your application.
 
-1. [Deploy your repository](https://dashboard.render.com/select-repo?type=blueprint) to Render as [Blueprint](https://render.com/docs/infrastructure-as-code).
+1. [Deploy your repository](https://dashboard.render.com/select-repo?type=blueprint) to Render as a [Blueprint](https://render.com/docs/infrastructure-as-code).
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://dashboard.render.com/select-repo?type=blueprint)
 
