@@ -28,7 +28,7 @@ In this guide:
 
 ## Deployment
 
-1. [Use this template](https://github.com/jimthoburn/wordpress/generate) to generate a new repository for MySQL in your GitHub account.
+1. [Use this template](https://github.com/jimthoburn/wordpress/generate) to generate a new repository for WordPress in your GitHub account.
 
 1. Change the name of the default branch in your repository. For example: `main`
 
