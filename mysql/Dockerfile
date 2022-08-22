@@ -4,4 +4,4 @@
 # If you change the version here, you may also want change it in:
 # `backups/install-mysqldump.sh`
 
-FROM mysql:8.0.29
+FROM mysql:8.0.30
